@@ -11,6 +11,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+  // 在任何 renderPdf 呼叫前預先設定 worker，避免 "Setting up fake worker" 警告
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+</script>
 <style>
 :root{
   --navy:#1a2e4a;--navy2:#243d5e;
@@ -349,6 +356,91 @@ input[type=range]{width:72px;accent-color:var(--navy);}
 .line-cta-sub{font-size:.7rem;color:rgba(255,255,255,.8);}
 .line-cta-arrow{color:rgba(255,255,255,.7);}
 
+/* ─── TOAST ─── */
+#toast-wrap{
+  position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);
+  z-index:9999;display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  pointer-events:none;width:calc(100% - 2rem);max-width:420px;
+}
+.toast{
+  width:100%;padding:.85rem 1.1rem;border-radius:12px;
+  display:flex;align-items:flex-start;gap:.75rem;
+  box-shadow:0 8px 32px rgba(0,0,0,.18);
+  opacity:0;transform:translateY(1.5rem) scale(.97);
+  transition:opacity .3s,transform .3s;pointer-events:auto;
+  font-size:.82rem;line-height:1.5;
+}
+.toast.show{opacity:1;transform:translateY(0) scale(1);}
+.toast.hiding{opacity:0;transform:translateY(1.5rem) scale(.97);}
+.toast-icon{
+  width:2rem;height:2rem;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.toast-body{flex:1;}
+.toast-title{font-weight:700;margin-bottom:.12rem;}
+.toast-desc{font-size:.74rem;opacity:.85;line-height:1.55;}
+/* success green */
+.toast.t-success{background:#f0fff4;border:1px solid #9ae6b4;color:#276749;}
+.toast.t-success .toast-icon{background:#9ae6b4;}
+/* upload blue */
+.toast.t-upload{background:#ebf4ff;border:1px solid #90cdf4;color:#2b6cb0;}
+.toast.t-upload .toast-icon{background:#90cdf4;}
+/* error */
+.toast.t-error{background:#fff5f5;border:1px solid #feb2b2;color:#c53030;}
+.toast.t-error .toast-icon{background:#feb2b2;}
+
+/* ─── UPLOAD SUCCESS BANNER ─── */
+#upload-banner{
+  display:none;
+  background:#f0fff4;border:1px solid #9ae6b4;border-radius:10px;
+  padding:.7rem 1rem;margin-top:.8rem;
+  flex-direction:row;align-items:center;gap:.65rem;
+  font-size:.78rem;color:#276749;font-weight:600;
+}
+#upload-banner.show{display:flex;}
+#upload-banner .ub-icon{font-size:1.1rem;flex-shrink:0;}
+#upload-banner .ub-text span{font-weight:400;color:#48bb78;font-size:.7rem;display:block;}
+#upload-banner .ub-change{
+  margin-left:auto;font-size:.7rem;font-weight:500;
+  color:#2b6cb0;cursor:pointer;white-space:nowrap;text-decoration:underline;
+}
+
+/* ─── DOWNLOAD SUCCESS BANNER ─── */
+#dl-banner{
+  display:none;
+  background:linear-gradient(135deg,#f0fff4,#e6ffed);
+  border:1px solid #68d391;border-radius:12px;
+  padding:1rem 1.1rem;margin-top:.9rem;
+}
+#dl-banner.show{display:block;}
+.dl-banner-head{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.88rem;font-weight:700;color:#276749;margin-bottom:.6rem;
+}
+.dl-banner-head .dk-icon{font-size:1.3rem;}
+.dl-banner-steps{display:flex;flex-direction:column;gap:.35rem;}
+.dl-step{
+  display:flex;align-items:center;gap:.55rem;
+  font-size:.75rem;color:#2d6a4f;
+}
+.dl-step-num{
+  width:1.3rem;height:1.3rem;border-radius:50%;
+  background:#48bb78;color:#fff;font-size:.62rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dl-banner-line{
+  margin:.75rem 0 .5rem;border:none;border-top:1px dashed #9ae6b4;
+}
+.dl-banner-line-cta{
+  display:flex;align-items:center;gap:.7rem;
+  background:#06c755;border-radius:9px;padding:.65rem .9rem;
+  text-decoration:none;transition:background .15s;
+}
+.dl-banner-line-cta:hover{background:#00a041;}
+.dl-banner-line-cta svg{flex-shrink:0;}
+.dl-banner-line-cta span{font-size:.78rem;font-weight:700;color:#fff;}
+.dl-banner-line-cta small{font-size:.65rem;color:rgba(255,255,255,.85);display:block;}
+
 /* ─── RESPONSIVE ─── */
 @media(max-width:520px){
   .tagline{display:none;}
@@ -361,6 +453,7 @@ input[type=range]{width:72px;accent-color:var(--navy);}
   .btn{padding:.38rem .65rem;font-size:.74rem;}
   .faq-q{padding:.75rem 1.1rem;font-size:.78rem;}
   .faq-a{padding:.15rem 1.1rem .8rem;}
+  #toast-wrap{bottom:.8rem;}
 }
 </style>
 </head>
@@ -460,10 +553,19 @@ input[type=range]{width:72px;accent-color:var(--navy);}
       </div>
     </div>
     <input type="file" id="pdf-upload" accept="application/pdf" style="display:none">
+    <!-- 上傳成功橫幅 -->
+    <div id="upload-banner">
+      <div class="ub-icon">&#10003;</div>
+      <div class="ub-text">
+        <span id="upload-filename">委任書.pdf</span>
+        <span>PDF 已載入，請繼續完成以下步驟</span>
+      </div>
+      <div class="ub-change" onclick="document.getElementById('pdf-upload').click()">重新選擇</div>
+    </div>
   </div>
 
   <!-- CARD 2: Signature -->
-  <div class="card">
+  <div class="card" id="card-sig">
     <div class="card-head">
       <div class="card-num">2</div>
       <h2>建立手寫簽名</h2>
@@ -562,9 +664,24 @@ input[type=range]{width:72px;accent-color:var(--navy);}
       下載已簽署的 PDF 文件
     </button>
     <div class="notice">
-      <strong>隱私聲明：</strong>本工具完全在您的瀏覽器本機執行，PDF 與簽名圖像<strong>不會上傳至任何伺服器</strong>，請安心使用。<br>
-      下載完成後，請將 PDF 回傳至國宸事務所：
-      <a href="https://line.me/ti/p/umTOEprRU2" target="_blank">LINE @d721104</a>
+      <strong>隱私聲明：</strong>本工具完全在您的瀏覽器本機執行，PDF 與簽名圖像<strong>不會上傳至任何伺服器</strong>，請安心使用。
+    </div>
+    <!-- 下載完成橫幅 -->
+    <div id="dl-banner">
+      <div class="dl-banner-head">
+        <span class="dk-icon">&#127881;</span>
+        下載完成！請將文件回傳給國宸
+      </div>
+      <div class="dl-banner-steps">
+        <div class="dl-step"><div class="dl-step-num">1</div>確認 PDF 已存到您的手機或電腦</div>
+        <div class="dl-step"><div class="dl-step-num">2</div>開啟 LINE，搜尋或加入「@d721104」</div>
+        <div class="dl-step"><div class="dl-step-num">3</div>點「＋」→「檔案」→ 選擇剛下載的 PDF 傳送</div>
+      </div>
+      <hr class="dl-banner-line">
+      <a class="dl-banner-line-cta" href="https://line.me/ti/p/umTOEprRU2" target="_blank">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.929 1.453 5.546 3.736 7.265l-.487 3.485 3.854-2.028C10.04 20.3 11 20.486 12 20.486c5.523 0 10-4.145 10-9.243S17.523 2 12 2z"/></svg>
+        <div><span>立即開啟 LINE 回傳文件</span><small>國宸官方帳號 @d721104</small></div>
+      </a>
     </div>
   </div>
 
@@ -635,6 +752,9 @@ input[type=range]{width:72px;accent-color:var(--navy);}
   <a href="https://line.me/ti/p/umTOEprRU2" target="_blank">LINE @d721104</a>
 </footer>
 
+<!-- TOAST CONTAINER -->
+<div id="toast-wrap"></div>
+
 <script>
 // ═══════════════════════════════════════════════════════════
 // STATE
@@ -648,6 +768,28 @@ let resizeHandle=null,dragOffX=0,dragOffY=0,anchorX=0,anchorY=0;
 let strokePts=[];
 let originalPdfBytes=null,pdfDocProxy=null;
 let drawColor='#000000',drawThick=3;
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+const toastWrap = document.getElementById('toast-wrap');
+function showToast(title, desc, type='t-success', duration=4500){
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icons = {'t-success':'✓','t-upload':'📄','t-error':'✕'};
+  el.innerHTML = `
+    <div class="toast-icon">${icons[type]||'✓'}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      ${desc ? `<div class="toast-desc">${desc}</div>` : ''}
+    </div>`;
+  toastWrap.appendChild(el);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
+  setTimeout(()=>{
+    el.classList.add('hiding');
+    setTimeout(()=>el.remove(), 350);
+  }, duration);
+}
 
 // ═══════════════════════════════════════════════════════════
 // DOM REFS
@@ -673,6 +815,9 @@ const sigThickEl    = document.getElementById('sig-thick');
 const sigThickVal   = document.getElementById('sig-thick-val');
 const clearSigBtn   = document.getElementById('clear-sig-btn');
 const saveSigBtn    = document.getElementById('save-sig-btn');
+const uploadBanner  = document.getElementById('upload-banner');
+const uploadFilename= document.getElementById('upload-filename');
+const dlBanner      = document.getElementById('dl-banner');
 
 // ═══════════════════════════════════════════════════════════
 // HELPERS
@@ -774,7 +919,14 @@ uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragove
 uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
 
 async function handleFile(file){
-  if(!file||file.type!=='application/pdf'){setStatus('請選擇有效的 PDF 檔案。','error');return;}
+  if(!file||file.type!=='application/pdf'){
+    setStatus('請選擇有效的 PDF 檔案。','error');
+    showToast('格式錯誤','請選擇 .pdf 格式的委任書檔案。','t-error',4000);
+    return;
+  }
+  // 隱藏上次的成功橫幅
+  uploadBanner.classList.remove('show');
+  dlBanner.classList.remove('show');
   setStatus('讀取 PDF 中…','info');
   isPdfLoaded=false;artifacts=[];selectedArt=null;
   downloadBtn.disabled=true;
@@ -791,6 +943,13 @@ async function handleFile(file){
     setTool('scroll');
     setStatus('PDF 載入完成。請先確認簽名（步驟 2），再放置簽名至文件。','success');
     setStep(signatureDataUrl?3:2);
+    // 上傳成功：橫幅 + Toast
+    const fname = file.name.length > 30 ? file.name.slice(0,28)+'…' : file.name;
+    uploadFilename.textContent = fname;
+    uploadBanner.classList.add('show');
+    showToast('PDF 上傳成功！',`已載入「${fname}」，請繼續完成簽名。`,'t-upload',5000);
+    // 捲動到簽名區
+    setTimeout(()=>document.getElementById('card-sig')?.scrollIntoView({behavior:'smooth',block:'start'}),400);
   };
   reader.readAsArrayBuffer(file);
 }
@@ -800,7 +959,10 @@ async function handleFile(file){
 // ═══════════════════════════════════════════════════════════
 async function renderPdf(data,rerender=false){
   const{pdfjsLib}=window;
-  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  // workerSrc 已在 <head> 設定，此處僅作保險備援
+  if(!pdfjsLib.GlobalWorkerOptions.workerSrc){
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
   if(!pdfDocProxy||!rerender)pdfDocProxy=await pdfjsLib.getDocument({data}).promise;
   const numPages=pdfDocProxy.numPages;
   const vw=viewerEl.clientWidth-32;
@@ -1000,8 +1162,18 @@ downloadBtn.addEventListener('click',async()=>{
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');a.href=url;a.download='商標委任書_已簽署.pdf';
     document.body.appendChild(a);a.click();URL.revokeObjectURL(url);document.body.removeChild(a);
-    setStatus('✓ 下載完成！請將文件回傳至國宸事務所（LINE @d721104）。','success');setStep(4);
-  }catch(err){console.error(err);setStatus('儲存 PDF 時發生錯誤，請重試。','error');}
+    setStatus('✓ 下載完成！請依下方步驟將文件回傳給國宸。','success');
+    setStep(4);
+    // 下載成功橫幅 + Toast
+    dlBanner.classList.add('show');
+    showToast('文件已下載完成 🎉','請用 LINE 將 PDF 回傳給國宸（@d721104）。','t-success',6000);
+    // 捲動到下載橫幅
+    setTimeout(()=>dlBanner.scrollIntoView({behavior:'smooth',block:'center'}),300);
+  }catch(err){
+    console.error(err);
+    setStatus('儲存 PDF 時發生錯誤，請重試。','error');
+    showToast('儲存失敗','發生錯誤，請重新整理頁面後再試。','t-error',5000);
+  }
   finally{downloadBtn.disabled=false;artifacts.forEach((_,idx)=>redrawPage(idx));}
 });
 
