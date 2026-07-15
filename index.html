@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商標委任書線上簽署 | 國宸國際商標事務所</title>
+<meta name="description" content="國宸國際商標事務所提供安全便利的線上委任書簽署服務，上傳 PDF、手寫簽名、即時下載，完全免費。">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+:root{
+  --navy:#1a2e4a;--navy2:#243d5e;
+  --gold:#c9a84c;--gold-lt:#e8d28a;--gold-bg:rgba(201,168,76,.08);
+  --cream:#faf8f4;--ink:#2d3748;--muted:#718096;
+  --border:#e2d9c8;--card-shadow:0 2px 12px rgba(26,46,74,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--ink);}
+
+/* ─── HEADER ─── */
+.site-header{
+  background:var(--navy);
+  padding:.85rem 1.6rem;
+  display:flex;align-items:center;gap:1.2rem;
+  border-bottom:3px solid var(--gold);
+  position:sticky;top:0;z-index:200;
+}
+.logo-wrap{display:flex;flex-direction:column;gap:.1rem;}
+.logo-mark{
+  font-family:'Noto Serif TC',serif;font-size:1.3rem;font-weight:700;
+  color:#fff;letter-spacing:.06em;white-space:nowrap;
+}
+.logo-mark em{color:var(--gold);font-style:normal;}
+.tagline{font-size:.65rem;color:#8fa8c8;letter-spacing:.1em;white-space:nowrap;}
+.header-badge{
+  margin-left:auto;
+  background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.5);
+  color:var(--gold-lt);font-size:.62rem;font-weight:600;
+  padding:.22rem .7rem;border-radius:999px;letter-spacing:.04em;white-space:nowrap;
+}
+
+/* ─── STEP NAV ─── */
+.steps-nav{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:.9rem 1.6rem;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.s-item{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.s-item+.s-item::before{
+  content:'';display:block;width:2rem;height:2px;
+  background:var(--border);margin:0 .5rem;flex-shrink:0;
+}
+.s-num{
+  width:1.75rem;height:1.75rem;border-radius:50%;
+  background:#e2e8f0;color:#718096;
+  font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .3s;
+}
+.s-label{font-size:.75rem;color:var(--muted);white-space:nowrap;transition:color .3s;}
+.s-item.active .s-num{background:var(--gold);color:var(--navy);}
+.s-item.active .s-label{color:var(--navy);font-weight:700;}
+.s-item.done .s-num{background:#48bb78;color:#fff;}
+.s-item.done .s-label{color:#276749;}
+
+/* ─── MAIN ─── */
+.main-wrap{max-width:840px;margin:0 auto;padding:1.6rem 1rem 5rem;}
+
+/* ─── CARD ─── */
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.5rem 1.6rem;
+  margin-bottom:1.25rem;
+  box-shadow:var(--card-shadow);
+}
+.card-head{
+  display:flex;align-items:center;gap:.65rem;
+  margin-bottom:1.1rem;
+  padding-bottom:.8rem;
+  border-bottom:1px solid #f0ece4;
+}
+.card-num{
+  width:1.7rem;height:1.7rem;border-radius:50%;
+  background:var(--navy);color:#fff;
+  font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card-head h2{font-size:.92rem;font-weight:700;color:var(--navy);letter-spacing:.03em;}
+.card-sub{font-size:.75rem;color:var(--muted);line-height:1.65;margin-bottom:.9rem;}
+
+/* ─── UPLOAD ZONE ─── */
+.upload-zone{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.6rem;
+  border:2px dashed #ccc9be;
+  border-radius:12px;
+  padding:2.8rem 1.2rem;
+  cursor:pointer;
+  background:var(--cream);
+  transition:border-color .2s,background .2s,box-shadow .2s;
+  text-align:center;
+  text-decoration:none;
+}
+.upload-zone:hover,.upload-zone.dragover{
+  border-color:var(--gold);background:#fffcf0;
+  box-shadow:0 0 0 4px rgba(201,168,76,.12);
+}
+.upload-icon{
+  width:3.2rem;height:3.2rem;
+  background:var(--gold-bg);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.upload-icon svg{color:var(--gold);}
+.upload-main{font-size:.9rem;font-weight:700;color:var(--navy);}
+.upload-hint{font-size:.75rem;color:var(--muted);}
+.upload-chips{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.2rem;}
+.upload-chip{
+  font-size:.65rem;padding:.18rem .55rem;border-radius:999px;
+  background:#f0f4f8;color:#4a5568;border:1px solid #e2e8f0;
+}
+
+/* ─── SIG PAD ─── */
+.sig-wrap{
+  position:relative;border-radius:10px;overflow:hidden;
+  border:2px dashed #c3d4e8;background:#f8fbff;
+  transition:border-color .2s;
+}
+.sig-wrap.has-ink{border-color:var(--gold);background:#fff;}
+#signature-canvas{
+  display:block;width:100%;height:140px;
+  touch-action:none;cursor:crosshair;
+}
+.sig-hint{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  font-size:.8rem;color:#a0aec0;gap:.4rem;
+}
+.sig-controls{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  margin-top:.7rem;align-items:center;justify-content:flex-end;
+}
+.ctrl-group{display:flex;align-items:center;gap:.35rem;}
+.ctrl-label{font-size:.7rem;color:var(--muted);}
+input[type=color]{
+  width:2rem;height:1.8rem;border-radius:5px;
+  border:1px solid var(--border);cursor:pointer;padding:2px;
+}
+input[type=range]{width:72px;accent-color:var(--navy);}
+.thick-val{font-size:.7rem;width:1rem;text-align:right;color:var(--ink);}
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.42rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;
+  border:1px solid var(--border);background:#fff;color:var(--ink);
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+  font-family:inherit;
+}
+.btn:hover:not(:disabled){background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn.ghost-red{border-color:#fca5a5;color:#dc2626;}
+.btn.ghost-red:hover:not(:disabled){background:#dc2626;border-color:#dc2626;color:#fff;}
+.btn.solid-green{background:#276749;color:#fff;border-color:#276749;}
+.btn.solid-green:hover:not(:disabled){background:#22543d;border-color:#22543d;}
+.btn-sep{width:1px;height:1.3rem;background:var(--border);}
+
+/* ─── TOOL BAR ─── */
+.tool-bar{
+  display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;
+  padding:.7rem 1rem;
+  background:#f7f6f2;border:1px solid var(--border);border-radius:9px;
+  margin-bottom:.9rem;
+}
+
+/* ─── STATUS BAR ─── */
+#status-bar{
+  display:flex;align-items:center;gap:.55rem;
+  padding:.55rem .9rem;border-radius:8px;
+  font-size:.77rem;font-weight:500;
+  margin-bottom:.9rem;transition:all .25s;
+}
+#status-bar.info   {background:#ebf4ff;color:#2b6cb0;border:1px solid #bee3f8;}
+#status-bar.success{background:#f0fff4;color:#276749;border:1px solid #9ae6b4;}
+#status-bar.warn   {background:#fffff0;color:#744210;border:1px solid #faf089;}
+#status-bar.error  {background:#fff5f5;color:#c53030;border:1px solid #fed7d7;}
+.s-dot{width:1.3rem;height:1.3rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
+#status-bar.info    .s-dot{background:#bee3f8;color:#2b6cb0;}
+#status-bar.success .s-dot{background:#9ae6b4;color:#276749;}
+#status-bar.warn    .s-dot{background:#faf089;color:#744210;}
+#status-bar.error   .s-dot{background:#fed7d7;color:#c53030;}
+
+/* ─── VIEWER ─── */
+#viewer-container{
+  background:#ddd8ce;border-radius:10px;
+  padding:1rem;overflow-x:auto;text-align:center;min-height:220px;
+}
+.viewer-ph{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.75rem;height:220px;color:var(--muted);font-size:.82rem;
+}
+.page-container{
+  position:relative;display:inline-block;
+  margin:.5rem auto;border-radius:3px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.pdf-canvas{display:block;}
+.drawing-canvas{position:absolute;top:0;left:0;pointer-events:none;touch-action:none;}
+
+/* ─── DOWNLOAD BTN ─── */
+.dl-btn{
+  width:100%;padding:1rem 1.2rem;
+  background:var(--navy);color:#fff;
+  font-size:.95rem;font-weight:700;font-family:inherit;
+  border:none;border-radius:10px;cursor:pointer;
+  letter-spacing:.04em;
+  border-bottom:3px solid var(--gold);
+  transition:background .2s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:.6rem;
+}
+.dl-btn:hover:not(:disabled){background:var(--navy2);transform:translateY(-1px);}
+.dl-btn:disabled{background:#a0aec0;border-bottom-color:transparent;cursor:not-allowed;}
+
+/* ─── NOTICE ─── */
+.notice{
+  background:#f8f6f0;border-left:3px solid var(--gold);
+  border-radius:0 7px 7px 0;padding:.7rem .9rem;
+  font-size:.72rem;color:var(--muted);line-height:1.7;margin-top:.85rem;
+}
+.notice strong{color:var(--navy);}
+.notice a{color:var(--gold);text-decoration:none;}
+
+/* ─── FOOTER ─── */
+.site-footer{
+  text-align:center;padding:1.5rem 1rem;
+  font-size:.68rem;color:#a0aec0;border-top:1px solid var(--border);
+}
+.site-footer a{color:var(--gold);text-decoration:none;}
+
+/* ─── HERO GUIDE ─── */
+.hero-guide{
+  background:linear-gradient(135deg,var(--navy) 0%,#243d5e 100%);
+  border-radius:16px;padding:1.8rem 1.6rem;margin-bottom:1.25rem;
+  color:#fff;position:relative;overflow:hidden;
+}
+.hero-guide::before{
+  content:'';position:absolute;right:-2rem;top:-2rem;
+  width:9rem;height:9rem;border-radius:50%;
+  background:rgba(201,168,76,.08);pointer-events:none;
+}
+.hero-guide::after{
+  content:'';position:absolute;right:1.5rem;bottom:-3rem;
+  width:6rem;height:6rem;border-radius:50%;
+  background:rgba(201,168,76,.06);pointer-events:none;
+}
+.hero-title{
+  font-family:'Noto Serif TC',serif;font-size:1.15rem;font-weight:700;
+  color:#fff;margin-bottom:.35rem;letter-spacing:.04em;
+}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:.75rem;color:#8fa8c8;margin-bottom:1.3rem;line-height:1.6;}
+.guide-steps{display:flex;flex-direction:column;gap:.6rem;}
+.g-step{
+  display:flex;align-items:flex-start;gap:.75rem;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:.7rem .9rem;
+}
+.g-step-num{
+  width:1.6rem;height:1.6rem;border-radius:50%;
+  background:var(--gold);color:var(--navy);
+  font-size:.72rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.g-step-body{flex:1;}
+.g-step-title{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.15rem;}
+.g-step-desc{font-size:.7rem;color:#8fa8c8;line-height:1.55;}
+.hero-tip{
+  margin-top:1.1rem;padding:.6rem .9rem;
+  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);
+  border-radius:8px;font-size:.7rem;color:var(--gold-lt);line-height:1.6;
+}
+.hero-tip strong{color:var(--gold);}
+
+/* ─── FAQ ─── */
+.faq-card{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;margin-bottom:1.25rem;box-shadow:var(--card-shadow);
+}
+.faq-head{
+  display:flex;align-items:center;gap:.65rem;
+  padding:1.1rem 1.4rem;border-bottom:1px solid #f0ece4;
+}
+.faq-head h2{font-size:.9rem;font-weight:700;color:var(--navy);}
+.faq-list{padding:.4rem 0;}
+.faq-item{border-bottom:1px solid #f5f2ed;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+  padding:.85rem 1.4rem;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:var(--ink);
+  user-select:none;-webkit-user-select:none;
+  transition:background .15s;
+}
+.faq-q:hover{background:#faf8f4;}
+.faq-q:active{background:#f5f1e8;}
+.faq-icon{
+  width:1.2rem;height:1.2rem;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--gold-bg);border-radius:50%;
+  transition:transform .25s;
+}
+.faq-icon svg{color:var(--gold);}
+.faq-item.open .faq-icon{transform:rotate(180deg);}
+.faq-a{
+  display:none;padding:.2rem 1.4rem .9rem;
+  font-size:.76rem;color:var(--muted);line-height:1.72;
+}
+.faq-a a{color:var(--gold);text-decoration:none;}
+.faq-item.open .faq-a{display:block;}
+
+/* ─── LINE CTA ─── */
+.line-cta{
+  background:linear-gradient(135deg,#06c755 0%,#00a041 100%);
+  border-radius:12px;padding:1.2rem 1.4rem;
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1.25rem;text-decoration:none;
+  box-shadow:0 4px 16px rgba(6,199,85,.25);
+  transition:transform .15s,box-shadow .15s;
+}
+.line-cta:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(6,199,85,.35);}
+.line-cta:active{transform:translateY(0);}
+.line-logo{
+  width:2.6rem;height:2.6rem;border-radius:10px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.line-cta-body{flex:1;}
+.line-cta-title{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.1rem;}
+.line-cta-sub{font-size:.7rem;color:rgba(255,255,255,.8);}
+.line-cta-arrow{color:rgba(255,255,255,.7);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:520px){
+  .tagline{display:none;}
+  .card{padding:1.1rem;}
+  .steps-nav{padding:.7rem 1rem;}
+  .s-item+.s-item::before{width:1rem;}
+  .hero-guide{padding:1.4rem 1.2rem;}
+  .hero-title{font-size:1rem;}
+  .tool-bar{gap:.4rem;}
+  .btn{padding:.38rem .65rem;font-size:.74rem;}
+  .faq-q{padding:.75rem 1.1rem;font-size:.78rem;}
+  .faq-a{padding:.15rem 1.1rem .8rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-wrap">
+    <div class="logo-mark">國宸<em>國際</em>商標事務所</div>
+    <div class="tagline">GUOCHEN INTERNATIONAL TRADEMARK OFFICE &middot; TT000588</div>
+  </div>
+  <div class="header-badge">&#128274; 安全簽署工具</div>
+</header>
+
+<!-- STEPS -->
+<nav class="steps-nav">
+  <div class="s-item active" id="step1"><div class="s-num">1</div><span class="s-label">上傳委任書</span></div>
+  <div class="s-item" id="step2"><div class="s-num">2</div><span class="s-label">建立簽名</span></div>
+  <div class="s-item" id="step3"><div class="s-num">3</div><span class="s-label">放置簽名</span></div>
+  <div class="s-item" id="step4"><div class="s-num">4</div><span class="s-label">下載文件</span></div>
+</nav>
+
+<!-- MAIN -->
+<main class="main-wrap">
+
+  <!-- HERO GUIDE -->
+  <div class="hero-guide">
+    <div class="hero-title">歡迎使用<em>線上簽署</em>服務</div>
+    <div class="hero-sub">免安裝、免帳號，完全在您的手機或電腦上運行，4 個步驟即可完成委任書簽署。</div>
+    <div class="guide-steps">
+      <div class="g-step">
+        <div class="g-step-num">1</div>
+        <div class="g-step-body">
+          <div class="g-step-title">上傳委任書 PDF</div>
+          <div class="g-step-desc">點擊上傳區塊，選擇國宸寄給您的委任書 PDF 檔案。手機用戶可從「檔案」App 或雲端硬碟選取。</div>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="g-step-num">2</div>
+        <div class="g-step-body">
+          <div class="g-step-title">建立您的手寫簽名</div>
+          <div class="g-step-desc">在簽名框內用手指（手機）或滑鼠（電腦）簽上您的姓名，按「確認簽名」儲存。</div>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="g-step-num">3</div>
+        <div class="g-step-body">
+          <div class="g-step-title">點擊 PDF 放置簽名</div>
+          <div class="g-step-desc">切換「放置簽名」模式後，在 PDF 預覽的簽名欄位上點擊即可放置。可拖曳移動、拉角落縮放大小。</div>
+        </div>
+      </div>
+      <div class="g-step">
+        <div class="g-step-num">4</div>
+        <div class="g-step-body">
+          <div class="g-step-title">下載並回傳給國宸</div>
+          <div class="g-step-desc">按「下載已簽署的 PDF 文件」，儲存到手機後，以 LINE 或 Email 回傳給我們即完成！</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-tip">
+      &#128241; <strong>手機操作提示：</strong>簽名時請橫持手機，簽名框較寬易操作。PDF 預覽可左右滑動。放置簽名後若位置不對，可長按並拖曳調整。
+    </div>
+  </div>
+
+  <!-- LINE CTA -->
+  <a class="line-cta" href="https://line.me/ti/p/umTOEprRU2" target="_blank">
+    <div class="line-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+        <path d="M12 2C6.477 2 2 6.145 2 11.243c0 2.929 1.453 5.546 3.736 7.265l-.487 3.485 3.854-2.028C10.04 20.3 11 20.486 12 20.486c5.523 0 10-4.145 10-9.243S17.523 2 12 2zm1.057 12.415l-2.711-2.9-2.65 2.9L4.8 11.48l2.727 2.914 2.663-2.914 2.711 2.9 2.65-2.9 2.896 2.935-2.39 2.9z"/>
+      </svg>
+    </div>
+    <div class="line-cta-body">
+      <div class="line-cta-title">有問題？加 LINE 詢問國宸</div>
+      <div class="line-cta-sub">@d721104 ・ 商標申請、簽署問題即時回覆</div>
+    </div>
+    <div class="line-cta-arrow">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+    </div>
+  </a>
+
+  <!-- CARD 1: Upload -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-num">1</div>
+      <h2>上傳商標委任書 PDF</h2>
+    </div>
+    <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="上傳 PDF">
+      <div class="upload-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 7.5l-4.5-4.5m0 0L7.5 7.5M12 3v13.5"/>
+        </svg>
+      </div>
+      <div class="upload-main">點擊選擇或將 PDF 拖曳至此</div>
+      <div class="upload-chips">
+        <span class="upload-chip">&#128274; 檔案不上傳至伺服器</span>
+        <span class="upload-chip">&#128196; 僅接受 .pdf 格式</span>
+      </div>
+    </div>
+    <input type="file" id="pdf-upload" accept="application/pdf" style="display:none">
+  </div>
+
+  <!-- CARD 2: Signature -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-num">2</div>
+      <h2>建立手寫簽名</h2>
+    </div>
+    <p class="card-sub">請在下方框內以滑鼠或手指簽上您的姓名，完成後按「確認簽名」。</p>
+    <div class="sig-wrap" id="sig-wrap">
+      <canvas id="signature-canvas"></canvas>
+      <div class="sig-hint" id="sig-hint">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"/>
+        </svg>
+        在此處簽名
+      </div>
+    </div>
+    <div class="sig-controls">
+      <div class="ctrl-group">
+        <span class="ctrl-label">顏色</span>
+        <input type="color" id="sig-color" value="#000000">
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">粗細</span>
+        <input type="range" id="sig-thick" min="1" max="8" value="3">
+        <span class="thick-val" id="sig-thick-val">3</span>
+      </div>
+      <div class="btn-sep"></div>
+      <button class="btn ghost-red" id="clear-sig-btn">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        清除重簽
+      </button>
+      <button class="btn solid-green" id="save-sig-btn">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        確認簽名
+      </button>
+    </div>
+  </div>
+
+  <!-- CARD 3: Viewer -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-num">3</div>
+      <h2>在 PDF 上放置簽名與標註</h2>
+    </div>
+
+    <div id="status-bar" class="info">
+      <div class="s-dot" id="status-dot">i</div>
+      <span id="status-text">請先完成步驟 1、2，再開始放置簽名。</span>
+    </div>
+
+    <div class="tool-bar">
+      <button class="btn active" id="tool-scroll" disabled>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        選取／移動
+      </button>
+      <button class="btn" id="tool-sig-place" disabled>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"/></svg>
+        放置簽名
+      </button>
+      <button class="btn" id="tool-draw" disabled>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/></svg>
+        手寫標註
+      </button>
+      <div class="btn-sep"></div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">顏色</span>
+        <input type="color" id="draw-color" value="#000000">
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">粗細</span>
+        <input type="range" id="draw-thick" min="1" max="10" value="3">
+        <span class="thick-val" id="draw-thick-val">3</span>
+      </div>
+      <div class="btn-sep"></div>
+      <span style="font-size:.68rem;color:var(--muted);">選取後按 Delete 可刪除</span>
+    </div>
+
+    <div id="viewer-container">
+      <div class="viewer-ph">
+        <svg width="42" height="42" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" opacity=".3">
+          <path stroke-linecap="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+        </svg>
+        <span>上傳 PDF 後即可在此預覽與簽署</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4: Download -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-num">4</div>
+      <h2>下載已簽署的委任書</h2>
+    </div>
+    <button class="dl-btn" id="download-btn" disabled>
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+      </svg>
+      下載已簽署的 PDF 文件
+    </button>
+    <div class="notice">
+      <strong>隱私聲明：</strong>本工具完全在您的瀏覽器本機執行，PDF 與簽名圖像<strong>不會上傳至任何伺服器</strong>，請安心使用。<br>
+      下載完成後，請將 PDF 回傳至國宸事務所：
+      <a href="https://line.me/ti/p/umTOEprRU2" target="_blank">LINE @d721104</a>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-card">
+    <div class="faq-head">
+      <div class="card-num" style="background:var(--gold);color:var(--navy);">?</div>
+      <h2>常見問題 FAQ</h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>我的 PDF 會上傳到你們的伺服器嗎？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">不會。本工具完全在您的瀏覽器本機運行，PDF 檔案與簽名圖像皆不會傳送至任何伺服器。關閉瀏覽器頁面後，所有資料即自動清除。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>手機可以使用嗎？需要下載 App 嗎？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">完全支援手機瀏覽器（Safari / Chrome），<strong>不需要安裝任何 App</strong>。用手指即可在簽名框內簽名，操作與紙本簽名相同。建議橫持手機使用，簽名空間更充裕。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>我的簽名位置放錯了，可以調整嗎？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">可以。放置簽名後系統會自動切換到「選取／移動」模式，直接拖曳簽名即可移動位置；拖拉四個角落的方形把手可以縮放大小。若要刪除，點選簽名後按鍵盤 Delete 鍵（電腦），或再次放置一個新簽名覆蓋。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>下載後要怎麼回傳給國宸？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">下載的 PDF 會存到您的手機「下載」資料夾或電腦預設下載位置。接著：① 開啟 LINE → ② 找到國宸帳號 <a href="https://line.me/ti/p/umTOEprRU2" target="_blank">@d721104</a> → ③ 點「+」傳送檔案 → ④ 選取下載的 PDF 傳送即可。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>不知道 PDF 在哪裡，怎麼上傳？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">國宸寄給您的委任書通常透過 LINE 或 Email 傳送。<br>• <strong>LINE 收到的 PDF：</strong>長按 → 「轉傳」存至裝置，再從本頁上傳。<br>• <strong>Email 收到的 PDF：</strong>點附件儲存後，從本頁選擇上傳。<br>• <strong>iPhone 用戶：</strong>建議先存至「檔案」App，上傳時選「檔案」即可找到。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span>這份委任書的法律效力如何？</span>
+          <div class="faq-icon"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></div>
+        </div>
+        <div class="faq-a">本工具產生的手寫電子簽名，在商標申請實務中已被多家事務所採用作為委任書。TIPO（經濟部智慧財產局）受理電子委任書；如有特殊案件需求，國宸將另行通知您改以紙本正式簽署。</div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  &copy; 國宸國際商標事務所 &middot; 代理人字號 TT000588 &middot;
+  <a href="https://guochenipt.com" target="_blank">guochenipt.com</a> &middot;
+  <a href="https://line.me/ti/p/umTOEprRU2" target="_blank">LINE @d721104</a>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentTool='scroll',isPdfLoaded=false,signatureDataUrl=null;
+let signatureImg=new Image();
+let artifacts=[],selectedArt=null;
+const HANDLE=12;
+let isDragging=false,isResizing=false,isFreeDrawing=false;
+let resizeHandle=null,dragOffX=0,dragOffY=0,anchorX=0,anchorY=0;
+let strokePts=[];
+let originalPdfBytes=null,pdfDocProxy=null;
+let drawColor='#000000',drawThick=3;
+
+// ═══════════════════════════════════════════════════════════
+// DOM REFS
+// ═══════════════════════════════════════════════════════════
+const uploadZone    = document.getElementById('upload-zone');
+const uploadInput   = document.getElementById('pdf-upload');
+const viewerEl      = document.getElementById('viewer-container');
+const statusBar     = document.getElementById('status-bar');
+const statusText    = document.getElementById('status-text');
+const statusDot     = document.getElementById('status-dot');
+const sigCanvas     = document.getElementById('signature-canvas');
+const sigWrap       = document.getElementById('sig-wrap');
+const sigHint       = document.getElementById('sig-hint');
+const downloadBtn   = document.getElementById('download-btn');
+const toolScrollBtn = document.getElementById('tool-scroll');
+const toolSigBtn    = document.getElementById('tool-sig-place');
+const toolDrawBtn   = document.getElementById('tool-draw');
+const drawColorEl   = document.getElementById('draw-color');
+const drawThickEl   = document.getElementById('draw-thick');
+const drawThickVal  = document.getElementById('draw-thick-val');
+const sigColorEl    = document.getElementById('sig-color');
+const sigThickEl    = document.getElementById('sig-thick');
+const sigThickVal   = document.getElementById('sig-thick-val');
+const clearSigBtn   = document.getElementById('clear-sig-btn');
+const saveSigBtn    = document.getElementById('save-sig-btn');
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function setStatus(msg,type='info'){
+  statusText.textContent=msg;
+  statusBar.className=type;
+  const icons={info:'i',success:'✓',warn:'!',error:'✕'};
+  statusDot.textContent=icons[type]||'i';
+}
+function setStep(n){
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    if(i===n)el.classList.add('active');
+  });
+}
+function isBlank(canvas){
+  const b=document.createElement('canvas');
+  b.width=canvas.width;b.height=canvas.height;
+  return canvas.toDataURL()===b.toDataURL();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIGNATURE PAD
+// ═══════════════════════════════════════════════════════════
+let sigCtx=null;
+function initSigPad(){
+  sigCanvas.width=sigCanvas.offsetWidth||700;
+  sigCanvas.height=140;
+  sigCtx=sigCanvas.getContext('2d');
+  applySigStyle();
+}
+function applySigStyle(){
+  if(!sigCtx)return;
+  sigCtx.strokeStyle=sigColorEl.value;
+  sigCtx.lineWidth=parseInt(sigThickEl.value);
+  sigCtx.lineCap='round';sigCtx.lineJoin='round';
+}
+function pt(e,canvas){
+  const r=canvas.getBoundingClientRect();
+  const cx=((e.touches?e.touches[0].clientX:e.clientX)-r.left)*(canvas.width/r.width);
+  const cy=((e.touches?e.touches[0].clientY:e.clientY)-r.top)*(canvas.height/r.height);
+  return{x:cx,y:cy};
+}
+(function(){
+  let drawing=false;
+  function start(e){e.preventDefault();drawing=true;applySigStyle();const{x,y}=pt(e,sigCanvas);sigCtx.beginPath();sigCtx.moveTo(x,y);sigHint.style.display='none';}
+  function move(e){if(!drawing)return;e.preventDefault();const{x,y}=pt(e,sigCanvas);sigCtx.lineTo(x,y);sigCtx.stroke();sigWrap.classList.add('has-ink');}
+  function end(){drawing=false;if(sigCtx)sigCtx.closePath();}
+  sigCanvas.addEventListener('mousedown',start);
+  sigCanvas.addEventListener('mousemove',move);
+  sigCanvas.addEventListener('mouseup',end);
+  sigCanvas.addEventListener('mouseleave',end);
+  sigCanvas.addEventListener('touchstart',start,{passive:false});
+  sigCanvas.addEventListener('touchmove',move,{passive:false});
+  sigCanvas.addEventListener('touchend',end);
+})();
+
+sigColorEl.addEventListener('input',applySigStyle);
+sigThickEl.addEventListener('input',e=>{sigThickVal.textContent=e.target.value;applySigStyle();});
+drawColorEl.addEventListener('input',e=>{drawColor=e.target.value;});
+drawThickEl.addEventListener('input',e=>{drawThick=parseInt(e.target.value);drawThickVal.textContent=e.target.value;});
+
+clearSigBtn.addEventListener('click',()=>{
+  if(!sigCtx)return;
+  sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+  sigWrap.classList.remove('has-ink');
+  sigHint.style.display='';
+  signatureDataUrl=null;
+  toolSigBtn.disabled=true;
+  setStatus('簽名已清除，請重新簽名。','warn');
+  setStep(2);
+});
+
+saveSigBtn.addEventListener('click',()=>{
+  if(isBlank(sigCanvas)){setStatus('簽名框是空白的，請先在框內簽名。','error');return;}
+  signatureDataUrl=sigCanvas.toDataURL('image/png');
+  signatureImg=new Image();
+  signatureImg.src=signatureDataUrl;
+  signatureImg.onload=()=>{
+    signatureImg.ar=signatureImg.width/signatureImg.height||2;
+    toolSigBtn.disabled=!isPdfLoaded;
+    if(isPdfLoaded){setTool('stamp');setStep(3);}
+    else setStep(2);
+    setStatus('簽名已確認！請切換「放置簽名」，在 PDF 上點擊要簽名的位置。','success');
+  };
+});
+
+// ═══════════════════════════════════════════════════════════
+// UPLOAD
+// ═══════════════════════════════════════════════════════════
+uploadZone.addEventListener('click',()=>uploadInput.click());
+uploadZone.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')uploadInput.click();});
+uploadInput.addEventListener('change',e=>handleFile(e.target.files[0]));
+uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('dragover');});
+uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+
+async function handleFile(file){
+  if(!file||file.type!=='application/pdf'){setStatus('請選擇有效的 PDF 檔案。','error');return;}
+  setStatus('讀取 PDF 中…','info');
+  isPdfLoaded=false;artifacts=[];selectedArt=null;
+  downloadBtn.disabled=true;
+  toolScrollBtn.disabled=true;toolSigBtn.disabled=true;toolDrawBtn.disabled=true;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    originalPdfBytes=ev.target.result;
+    await renderPdf(originalPdfBytes);
+    isPdfLoaded=true;
+    downloadBtn.disabled=false;
+    toolScrollBtn.disabled=false;
+    toolDrawBtn.disabled=false;
+    if(signatureDataUrl)toolSigBtn.disabled=false;
+    setTool('scroll');
+    setStatus('PDF 載入完成。請先確認簽名（步驟 2），再放置簽名至文件。','success');
+    setStep(signatureDataUrl?3:2);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PDF RENDER
+// ═══════════════════════════════════════════════════════════
+async function renderPdf(data,rerender=false){
+  const{pdfjsLib}=window;
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  if(!pdfDocProxy||!rerender)pdfDocProxy=await pdfjsLib.getDocument({data}).promise;
+  const numPages=pdfDocProxy.numPages;
+  const vw=viewerEl.clientWidth-32;
+  let scale=1.2;
+  if(vw>0){const p1=await pdfDocProxy.getPage(1);const vp=p1.getViewport({scale:1});scale=Math.max(.5,Math.min(2.2,vw/vp.width));}
+  viewerEl.innerHTML='';
+  for(let i=1;i<=numPages;i++){
+    const page=await pdfDocProxy.getPage(i);
+    const vp=page.getViewport({scale});const pidx=i-1;
+    const wrap=document.createElement('div');wrap.className='page-container';wrap.dataset.pageIndex=pidx;
+    wrap.style.width=vp.width+'px';wrap.style.height=vp.height+'px';
+    const pdfC=document.createElement('canvas');pdfC.className='pdf-canvas';pdfC.width=vp.width;pdfC.height=vp.height;
+    const dC=document.createElement('canvas');dC.className='drawing-canvas';dC.dataset.pageIndex=pidx;dC.width=vp.width;dC.height=vp.height;
+    wrap.appendChild(pdfC);wrap.appendChild(dC);viewerEl.appendChild(wrap);
+    await page.render({canvasContext:pdfC.getContext('2d'),viewport:vp}).promise;
+    redrawPage(pidx);setupInteraction(dC);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOOLS
+// ═══════════════════════════════════════════════════════════
+function setTool(t){
+  if(!isPdfLoaded&&t!=='scroll')return;
+  currentTool=t;updateToolUI();
+  if(t!=='scroll'&&selectedArt){const pi=selectedArt.pageIndex;selectedArt=null;redrawPage(pi);}
+  isFreeDrawing=false;
+  const msgs={scroll:'選取／移動模式：點擊簽名或筆跡可拖曳，按 Delete 可刪除。',stamp:'放置簽名模式：點擊 PDF 上要簽名的位置即可放置。',draw:'手寫標註模式：按住滑鼠或手指在 PDF 上自由繪製。'};
+  setStatus(msgs[t]||'',t==='scroll'?'info':'success');
+}
+function updateToolUI(){
+  [toolScrollBtn,toolSigBtn,toolDrawBtn].forEach(b=>b.classList.remove('active'));
+  if(currentTool==='scroll')toolScrollBtn.classList.add('active');
+  if(currentTool==='stamp')toolSigBtn.classList.add('active');
+  if(currentTool==='draw')toolDrawBtn.classList.add('active');
+  document.querySelectorAll('.drawing-canvas').forEach(c=>{
+    if(currentTool==='draw'){c.style.cursor='crosshair';c.style.pointerEvents='auto';}
+    else if(currentTool==='stamp'){c.style.cursor='copy';c.style.pointerEvents='auto';}
+    else{c.style.cursor='default';c.style.pointerEvents='auto';}
+  });
+}
+toolScrollBtn.addEventListener('click',()=>setTool('scroll'));
+toolDrawBtn.addEventListener('click',()=>setTool('draw'));
+toolSigBtn.addEventListener('click',()=>{if(!signatureDataUrl){setStatus('請先在步驟 2 建立並確認您的簽名。','warn');return;}setTool('stamp');});
+
+// ═══════════════════════════════════════════════════════════
+// REDRAW
+// ═══════════════════════════════════════════════════════════
+function getHandles(a){const hw=a.w/2,hh=a.h/2;return[{id:'tl',x:a.x-hw,y:a.y-hh},{id:'tr',x:a.x+hw,y:a.y-hh},{id:'bl',x:a.x-hw,y:a.y+hh},{id:'br',x:a.x+hw,y:a.y+hh}];}
+function hitHandle(x,y,a){if(a.type!=='sig')return null;for(const h of getHandles(a))if(Math.abs(x-h.x)<HANDLE&&Math.abs(y-h.y)<HANDLE)return h.id;return null;}
+function hitArt(x,y,pidx){
+  const p=artifacts.filter(a=>a.pageIndex===pidx);
+  for(const a of p.filter(a=>a.type==='sig').reverse())if(x>=a.x-a.w/2&&x<=a.x+a.w/2&&y>=a.y-a.h/2&&y<=a.y+a.h/2)return a;
+  for(const a of p.filter(a=>a.type==='stroke').reverse()){
+    const xs=a.pts.map(p=>p.x),ys=a.pts.map(p=>p.y),pad=a.lw+5;
+    if(x>=Math.min(...xs)-pad&&x<=Math.max(...xs)+pad&&y>=Math.min(...ys)-pad&&y<=Math.max(...ys)+pad)return a;
+  }
+  return null;
+}
+function redrawPage(pidx,clean=false){
+  const c=document.querySelector(`.drawing-canvas[data-page-index="${pidx}"]`);if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+  artifacts.filter(a=>a.pageIndex===pidx).forEach(art=>{
+    if(art.type==='sig'&&signatureImg.complete){
+      ctx.drawImage(signatureImg,art.x-art.w/2,art.y-art.h/2,art.w,art.h);
+      if(!clean&&selectedArt&&selectedArt.id===art.id){
+        ctx.setLineDash([5,4]);ctx.strokeStyle='#2563eb';ctx.lineWidth=2;
+        ctx.strokeRect(art.x-art.w/2,art.y-art.h/2,art.w,art.h);ctx.setLineDash([]);
+        getHandles(art).forEach(h=>{ctx.fillStyle='#fff';ctx.strokeStyle='#2563eb';ctx.lineWidth=2;ctx.fillRect(h.x-HANDLE/2,h.y-HANDLE/2,HANDLE,HANDLE);ctx.strokeRect(h.x-HANDLE/2,h.y-HANDLE/2,HANDLE,HANDLE);});
+      }
+    }else if(art.type==='stroke'){
+      ctx.strokeStyle=art.color;ctx.lineWidth=art.lw;ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();if(art.pts.length){ctx.moveTo(art.pts[0].x,art.pts[0].y);art.pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));}ctx.stroke();
+      if(!clean&&selectedArt&&selectedArt.id===art.id){
+        const xs=art.pts.map(p=>p.x),ys=art.pts.map(p=>p.y),pad=art.lw+5;
+        ctx.setLineDash([3,4]);ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;
+        ctx.strokeRect(Math.min(...xs)-pad,Math.min(...ys)-pad,Math.max(...xs)-Math.min(...xs)+pad*2,Math.max(...ys)-Math.min(...ys)+pad*2);ctx.setLineDash([]);
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════════════════
+function setupInteraction(canvas){
+  const pidx=parseInt(canvas.dataset.pageIndex);
+  const ctx=canvas.getContext('2d');
+  function coords(e){const r=canvas.getBoundingClientRect();return{x:((e.touches?e.touches[0].clientX:e.clientX)-r.left)*(canvas.width/r.width),y:((e.touches?e.touches[0].clientY:e.clientY)-r.top)*(canvas.height/r.height)};}
+  function down(e){
+    e.preventDefault();const{x,y}=coords(e);
+    if(currentTool==='stamp'&&signatureDataUrl){
+      const iw=140,ih=iw/(signatureImg.ar||2);
+      const art={id:Date.now()+Math.random(),type:'sig',pageIndex:pidx,x,y,w:iw,h:ih,ar:signatureImg.ar||2};
+      artifacts.push(art);selectedArt=art;redrawPage(pidx);setTool('scroll');
+      setStatus('簽名已放置，可拖曳調整位置或拉角落縮放大小。','success');setStep(4);return;
+    }
+    if(currentTool==='draw'){
+      isFreeDrawing=true;strokePts=[{x,y}];
+      ctx.strokeStyle=drawColor;ctx.lineWidth=drawThick;ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();ctx.moveTo(x,y);return;
+    }
+    if(currentTool==='scroll'){
+      if(selectedArt&&selectedArt.type==='sig'&&selectedArt.pageIndex===pidx){
+        const h=hitHandle(x,y,selectedArt);
+        if(h){
+          isResizing=true;resizeHandle=h;const a=selectedArt,hw=a.w/2,hh=a.h/2;
+          if(h==='br'){anchorX=a.x-hw;anchorY=a.y-hh;}else if(h==='bl'){anchorX=a.x+hw;anchorY=a.y-hh;}
+          else if(h==='tr'){anchorX=a.x-hw;anchorY=a.y+hh;}else{anchorX=a.x+hw;anchorY=a.y+hh;}
+          return;
+        }
+      }
+      const hit=hitArt(x,y,pidx);
+      if(hit){
+        if(selectedArt&&selectedArt.id!==hit.id)redrawPage(selectedArt.pageIndex);
+        selectedArt=hit;isDragging=true;
+        dragOffX=hit.type==='sig'?x-hit.x:x-hit.pts[0].x;
+        dragOffY=hit.type==='sig'?y-hit.y:y-hit.pts[0].y;
+        redrawPage(pidx);canvas.style.cursor='grabbing';
+      }else{
+        if(selectedArt){const pi=selectedArt.pageIndex;selectedArt=null;redrawPage(pi);}
+        canvas.style.cursor='default';
+      }
+    }
+  }
+  function move(e){
+    e.preventDefault();const{x,y}=coords(e);
+    if(isFreeDrawing){ctx.lineTo(x,y);ctx.stroke();strokePts.push({x,y});return;}
+    if(isResizing&&selectedArt){
+      const a=selectedArt,min=20;
+      let nw=(resizeHandle==='tl'||resizeHandle==='bl')?anchorX-x:x-anchorX;
+      let nh=(resizeHandle==='tl'||resizeHandle==='tr')?anchorY-y:y-anchorY;
+      nw=Math.max(min,Math.abs(nw));nh=Math.max(min,Math.abs(nh));
+      if(nw/nh>a.ar)nw=nh*a.ar;else nh=nw/a.ar;
+      if(resizeHandle==='tl'){a.x=anchorX-nw/2;a.y=anchorY-nh/2;}
+      else if(resizeHandle==='tr'){a.x=anchorX+nw/2;a.y=anchorY-nh/2;}
+      else if(resizeHandle==='bl'){a.x=anchorX-nw/2;a.y=anchorY+nh/2;}
+      else{a.x=anchorX+nw/2;a.y=anchorY+nh/2;}
+      a.w=nw;a.h=nh;redrawPage(a.pageIndex);return;
+    }
+    if(isDragging&&selectedArt){
+      if(selectedArt.type==='sig'){selectedArt.x=x-dragOffX;selectedArt.y=y-dragOffY;}
+      else{const dx=x-dragOffX-selectedArt.pts[0].x,dy=y-dragOffY-selectedArt.pts[0].y;selectedArt.pts.forEach(p=>{p.x+=dx;p.y+=dy;});dragOffX=x-selectedArt.pts[0].x;dragOffY=y-selectedArt.pts[0].y;}
+      redrawPage(selectedArt.pageIndex);return;
+    }
+    if(currentTool==='scroll'){
+      if(selectedArt&&selectedArt.type==='sig'&&selectedArt.pageIndex===pidx&&hitHandle(x,y,selectedArt)){canvas.style.cursor='nwse-resize';return;}
+      canvas.style.cursor=hitArt(x,y,pidx)?'grab':'default';
+    }
+  }
+  function up(e){
+    if(isFreeDrawing){
+      isFreeDrawing=false;ctx.closePath();
+      if(strokePts.length>1){artifacts.push({id:Date.now()+Math.random(),type:'stroke',pageIndex:pidx,pts:[...strokePts],color:drawColor,lw:drawThick});redrawPage(pidx);setStatus('筆跡已儲存。','success');}
+      else redrawPage(pidx);
+      strokePts=[];
+    }
+    if(isDragging){isDragging=false;canvas.style.cursor='grab';setStatus('已移動完成。','success');}
+    if(isResizing){isResizing=false;resizeHandle=null;setStatus('縮放完成。','success');canvas.style.cursor='default';}
+  }
+  canvas.addEventListener('mousedown',down);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',up);canvas.addEventListener('mouseleave',up);
+  canvas.addEventListener('touchstart',down,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',up);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DELETE KEY
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if((e.key==='Delete'||e.key==='Backspace')&&selectedArt&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){
+    e.preventDefault();const pi=selectedArt.pageIndex;artifacts=artifacts.filter(a=>a.id!==selectedArt.id);selectedArt=null;redrawPage(pi);setStatus('物件已刪除。','warn');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// DOWNLOAD
+// ═══════════════════════════════════════════════════════════
+downloadBtn.addEventListener('click',async()=>{
+  if(!originalPdfBytes){setStatus('請先上傳 PDF。','error');return;}
+  if(selectedArt){const pi=selectedArt.pageIndex;selectedArt=null;redrawPage(pi);}
+  setStatus('正在合併簽名，請稍候…','info');downloadBtn.disabled=true;
+  try{
+    const{PDFDocument}=window.PDFLib;
+    const pdfDoc=await PDFDocument.load(originalPdfBytes);
+    const pages=pdfDoc.getPages();
+    const dcs=document.querySelectorAll('.drawing-canvas');
+    for(let i=0;i<pages.length;i++){
+      redrawPage(i,true);
+      if(!isBlank(dcs[i])){
+        const pngData=await fetch(dcs[i].toDataURL('image/png')).then(r=>r.arrayBuffer());
+        const pngImg=await pdfDoc.embedPng(pngData);
+        const{width,height}=pages[i].getSize();
+        pages[i].drawImage(pngImg,{x:0,y:0,width,height});
+      }
+    }
+    const bytes=await pdfDoc.save();
+    const blob=new Blob([bytes],{type:'application/pdf'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='商標委任書_已簽署.pdf';
+    document.body.appendChild(a);a.click();URL.revokeObjectURL(url);document.body.removeChild(a);
+    setStatus('✓ 下載完成！請將文件回傳至國宸事務所（LINE @d721104）。','success');setStep(4);
+  }catch(err){console.error(err);setStatus('儲存 PDF 時發生錯誤，請重試。','error');}
+  finally{downloadBtn.disabled=false;artifacts.forEach((_,idx)=>redrawPage(idx));}
+});
+
+// ═══════════════════════════════════════════════════════════
+// FAQ TOGGLE
+// ═══════════════════════════════════════════════════════════
+function toggleFaq(el){
+  const item=el.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT + RESIZE
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('load',()=>initSigPad());
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{if(isPdfLoaded&&originalPdfBytes)renderPdf(originalPdfBytes,true);},350);
+});
+</script>
+</body>
+</html>
